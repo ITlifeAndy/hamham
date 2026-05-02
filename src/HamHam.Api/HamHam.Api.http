@@ -1,0 +1,6 @@
+@HamHam.Api_HostAddress = http://localhost:5131
+
+GET {{HamHam.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
