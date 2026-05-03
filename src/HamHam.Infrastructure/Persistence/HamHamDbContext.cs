@@ -66,15 +66,14 @@ namespace HamHam.Infrastructure.Persistence
               });
 
 
-              modelBuilder.Entity<SharedPoolBookmark>(entity =>
-              {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Name).HasColumnName("BookmarkTitle");
-                entity.Property(e => e.Url).HasColumnName("BookmarkUrl");
-                entity.HasIndex(e => new { e.SharedPoolsId, e.Url }).IsUnique();
-                  entity.HasOne<SharedPool>().WithMany().HasForeignKey(e => e.SharedPoolsId);
-                  entity.HasQueryFilter(spb => !spb.IsDeleted);
-              });
+               modelBuilder.Entity<SharedPoolBookmark>(entity =>
+               {
+                   entity.HasKey(e => e.Id);
+                   entity.HasIndex(e => new { e.SharedPoolsId, e.Url }).IsUnique();
+                   entity.HasOne<SharedPool>().WithMany().HasForeignKey(e => e.SharedPoolsId);
+                   entity.HasQueryFilter(spb => !spb.IsDeleted);
+               });
+
 
 
             modelBuilder.Entity<IconLibrary>(entity =>

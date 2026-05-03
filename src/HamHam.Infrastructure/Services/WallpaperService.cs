@@ -42,7 +42,7 @@ namespace HamHam.Infrastructure.Services
         public async Task<string> GetCurrentWallpaperAsync(Guid userId)
         {
             var pref = await _context.UserPreferences.FirstOrDefaultAsync(p => p.UsersId == userId);
-            if (pref == null) return "https://images.unsplash.com/photo-1477346611705-65512bc3a44e"; // Default
+            if (pref == null) return "https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=1920"; // Default
         
             if (pref.WallpaperType == WallpaperType.Unsplash)
             {
@@ -58,14 +58,14 @@ namespace HamHam.Infrastructure.Services
             {
                 WallpaperType.Color => pref.WallpaperValue,
                 WallpaperType.Image => pref.WallpaperValue,
-                _ => "https://images.unsplash.com/photo-1477346611705-65512bc3a44e"
+                _ => "https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=1920"
             };
         }
         
         public async Task<string> RefreshWallpaperAsync(Guid userId)
         {
             var pref = await _context.UserPreferences.FirstOrDefaultAsync(p => p.UsersId == userId);
-            if (pref == null) return "https://images.unsplash.com/photo-1477346611705-65512bc3a44e";
+            if (pref == null) return "https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=1920";
         
             var source = pref.WallpaperSource;
             var keywords = pref.WallpaperKeywords;
@@ -145,7 +145,7 @@ namespace HamHam.Infrastructure.Services
                 return new UserPreference 
                 { 
                     WallpaperType = WallpaperType.Image, 
-                    WallpaperValue = "https://images.unsplash.com/photo-1477346611705-65512bc3a44e",
+                    WallpaperValue = "https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=1920",
                     WallpaperSource = WallpaperSource.Custom,
                     RotationInterval = 24
                 };

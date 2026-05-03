@@ -15,10 +15,11 @@ export const AddBookmarkModal: React.FC<AddBookmarkModalProps> = ({ isOpen, onCl
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log('[AddBookmarkModal] Current pools:', pools);
     if (isOpen) {
       setName('');
       setUrl('');
-      if (pools.length > 0) {
+      if (pools && Array.isArray(pools) && pools.length > 0) {
         setPoolId(pools[0].id);
       } else {
         setPoolId('');

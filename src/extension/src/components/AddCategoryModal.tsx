@@ -65,7 +65,8 @@ export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, onCl
 
   return createPortal(
     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+       <div className="bg-white/70 backdrop-blur-md border border-white/40 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+
         <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
           <h2 className="font-bold text-lg text-slate-900">新增類別</h2>
           <button onClick={onClose} className="p-1 hover:bg-slate-100 rounded-full transition-colors">

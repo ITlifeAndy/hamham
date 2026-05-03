@@ -1,8 +1,12 @@
 import * as SignalR from '@microsoft/signalr';
+import { storage } from './storage';
 
-export const createSyncClient = (_userId: string, onNotify: (event: any) => void) => {
+export const createSyncClient = async (_userId: string, onNotify: (event: any) => void) => {
+  const hostUrl = await storage.get('api_host_url') || 'http://localhost:5000';
+  const baseUrl = hostUrl.replace(/\/$/, '');
+  
   const connection = new SignalR.HubConnectionBuilder()
-    .withUrl('http://localhost:5000/hubs/sync')
+    .withUrl(`${baseUrl}/hubs/sync`)
     .withAutomaticReconnect()
     .build();
 

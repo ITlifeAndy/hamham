@@ -16,7 +16,7 @@ interface WallpaperContextType {
 const WallpaperContext = createContext<WallpaperContextType | undefined>(undefined);
 
 export const WallpaperProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [wallpaperUrl, setWallpaperUrl] = useState<string>('https://images.unsplash.com/photo-1464822759023-//vC-S-H-h-U-A?q=80&w=2070&auto=format&fit=crop'); // Update to a more stable URL
+    const [wallpaperUrl, setWallpaperUrl] = useState<string>('https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=1920'); // Update to a more stable URL
     const [overlayOpacity, setOverlayOpacity] = useState(0.4);
     const [isDarkWallpaper, setIsDarkWallpaper] = useState(false);
 

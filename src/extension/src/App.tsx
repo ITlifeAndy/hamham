@@ -150,13 +150,17 @@ const App: React.FC = () => {
     };
   }, []);
 
-  const initSync = () => {
+  const initSync = async () => {
     const userId = 'current-user-id';
-    const connection = createSyncClient(userId, (event) => {
-      console.log('Sync notification received:', event);
-      loadData();
-    });
-    setSyncConnection(connection);
+    try {
+      const connection = await createSyncClient(userId, (event) => {
+        console.log('Sync notification received:', event);
+        loadData();
+      });
+      setSyncConnection(connection);
+    } catch (err) {
+      console.error('[Sync] Failed to initialize sync client', err);
+    }
   };
 
   const loadData = async () => {
