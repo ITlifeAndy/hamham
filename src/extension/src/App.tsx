@@ -15,6 +15,7 @@ import type { Category, Bookmark } from './api/types';
 import { createSyncClient } from './services/sync';
 import { storage } from './services/storage';
 import { useWallpaper } from './providers/WallpaperProvider';
+import { useHostUrl } from './hooks/useHostUrl';
 import * as SignalR from '@microsoft/signalr';
 
 import { resolveWallpaperUrl } from './utils/wallpaper';
@@ -22,7 +23,8 @@ import api from './api/client';
 
 const App: React.FC = () => {
   const { wallpaperUrl, overlayOpacity, isDarkWallpaper, refreshSettings } = useWallpaper();
-  const resolvedUrl = resolveWallpaperUrl(wallpaperUrl);
+  const hostUrl = useHostUrl();
+  const resolvedUrl = resolveWallpaperUrl(wallpaperUrl, hostUrl);
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -169,6 +171,7 @@ const App: React.FC = () => {
       const cats = await bookmarkApi.getCategories();
       console.log('[App] Categories loaded:', cats);
       setCategories(cats);
+      setRefreshTrigger(prev => prev + 1);
     } catch (err: any) {
       console.error('Failed to load data', err);
       if (err.response?.status === 401) {
@@ -340,17 +343,16 @@ const App: React.FC = () => {
            category={editingCategory} 
          />
        )}
-       {editingBookmark && (
-         <EditBookmarkModal 
-           isOpen={!!editingBookmark} 
-           onClose={() => setEditingBookmark(null)} 
-           onBookmarkUpdated={() => {
-             loadData();
-             setRefreshTrigger(prev => prev + 1);
-           }} 
-           bookmark={editingBookmark} 
-         />
-       )}
+        {editingBookmark && (
+          <EditBookmarkModal 
+            isOpen={!!editingBookmark} 
+            onClose={() => setEditingBookmark(null)} 
+            onBookmarkUpdated={() => {
+              loadData();
+            }} 
+            bookmark={editingBookmark} 
+          />
+        )}
      </div>
   );
 };

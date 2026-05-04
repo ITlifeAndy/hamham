@@ -66,6 +66,10 @@ namespace HamHam.Infrastructure.Services
                 finalCategoryId = rootCategory.Id;
             }
 
+            var maxSortOrder = await _context.Bookmarks
+                .Where(b => b.UsersId == userId && b.CategoriesId == finalCategoryId)
+                .MaxAsync(b => (int?)b.SortOrder) ?? -1;
+
             var bookmark = new Bookmark
             {
                 Id = Guid.NewGuid(),
@@ -76,7 +80,7 @@ namespace HamHam.Infrastructure.Services
                 CategoriesId = finalCategoryId,
                 Icon = request.icon,
                 Color = request.color,
-                SortOrder = 0
+                SortOrder = maxSortOrder + 1
             };
 
             _context.Bookmarks.Add(bookmark);

@@ -1,7 +1,7 @@
-export const resolveWallpaperUrl = (url: string | undefined | null) => {
+export const resolveWallpaperUrl = (url: string | undefined | null, host: string = 'http://localhost:5000') => {
   if (!url) return '';
   if (url.startsWith('http') || url.startsWith('#')) return url;
-  if (url.startsWith('/uploads')) return `http://localhost:5000${url}`;
+  if (url.startsWith('/uploads')) return `${host}${url}`;
   return url;
 };
 

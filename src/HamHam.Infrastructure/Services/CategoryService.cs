@@ -68,6 +68,10 @@ namespace HamHam.Infrastructure.Services
 
         public async Task<Category> CreateCategoryAsync(Guid userId, CreateCategoryRequest request)
         {
+            var maxSortOrder = await _context.Categories
+                .Where(c => c.UsersId == userId && c.CategoriesId == request.ParentId)
+                .MaxAsync(c => (int?)c.SortOrder) ?? -1;
+
             var category = new Category
             {
                 Id = Guid.NewGuid(),
@@ -76,7 +80,7 @@ namespace HamHam.Infrastructure.Services
                 Color = request.Color,
                 CategoriesId = request.ParentId,
                 Icon = request.Icon,
-                SortOrder = 0
+                SortOrder = maxSortOrder + 1
             };
 
             _context.Categories.Add(category);

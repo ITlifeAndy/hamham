@@ -39,14 +39,114 @@ interface UnifiedItem {
   data: any;
 }
 
+interface BookmarkItemProps {
+  bookmark: any;
+  isDarkWallpaper: boolean;
+  onDragStart: (e: React.DragEvent, id: string, type: 'Bookmark' | 'Category') => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDrop: (e: React.DragEvent, targetId: string, targetType: 'Bookmark' | 'Category', currentCatId: string) => void;
+  setEditingBookmark: (bm: Bookmark | null) => void;
+  refreshData: () => void;
+}
+
+const BookmarkItem: React.FC<BookmarkItemProps> = ({ 
+  bookmark, 
+  isDarkWallpaper, 
+  onDragStart, 
+  onDragOver, 
+  onDrop, 
+  setEditingBookmark, 
+  refreshData 
+}) => {
+  const isGlass = bookmark?.color === 'glass';
+  const bookmarkContrast = getContrastColor(bookmark?.color || '#f4f2fe');
+  const bmTextColor = isGlass 
+    ? (isDarkWallpaper ? 'text-white' : 'text-slate-900') 
+    : (bookmarkContrast === 'light' ? 'text-slate-900' : 'text-white');
+  const title = bookmark?.title || bookmark?.name || '無名稱';
+  const [isExpanded, setIsExpanded] = useState(false);
+  const note = bookmark?.subtitle || '';
+
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(note);
+  };
+
+  return (
+    <div 
+      draggable
+      onDragStart={(e) => onDragStart(e, bookmark?.id, 'Bookmark')}
+      onDragOver={onDragOver}
+      onDrop={(e) => onDrop(e, bookmark?.id, 'Bookmark', bookmark?.categoriesId)}
+      onClick={() => window.location.href = bookmark?.url}
+      className={`p-1 rounded-xl flex items-center gap-2 border transition-transform hover:-translate-y-0.5 active:scale-95 group cursor-move ${
+        isGlass 
+        ? 'bg-white/20 border-white/30 backdrop-blur-sm hover:bg-white/40' 
+        : 'border-border-ring'
+      }`}
+      style={{ backgroundColor: isGlass ? 'transparent' : (bookmark?.color || '#f4f2fe') }}
+    >
+      <div className="flex-1 overflow-hidden">
+          <h3 className={`font-bold text-sm truncate ${bmTextColor}`}>{title}</h3>
+          <div 
+            className={`flex items-start gap-1`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div 
+              draggable={false}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsExpanded(!isExpanded);
+              }}
+              className={`text-xs mb-0.5 transition-all select-text cursor-pointer ${isExpanded ? 'whitespace-pre-wrap break-words' : 'truncate'} ${isGlass ? (isDarkWallpaper ? 'text-white/80' : 'text-slate-500') : 'text-text-secondary'}`}
+            >
+              {isExpanded ? note : (note.length > 40 ? note.substring(0, 40) + '...' : note)}
+            </div>
+            {isExpanded && note && (
+              <button 
+                onClick={handleCopy}
+                className={`material-symbols-outlined text-[14px] ${isGlass ? (isDarkWallpaper ? 'text-white/60 hover:text-white' : 'text-slate-400 hover:text-primary') : 'text-primary/70 hover:text-primary'}`}
+                title="複製全部備註"
+              >
+                content_copy
+              </button>
+            )}
+          </div>
+      </div>
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditingBookmark(bookmark);
+            }}
+            className={`p-1 ${isGlass ? (isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-slate-400 hover:text-primary') : 'text-slate-400 hover:text-primary'}`}
+            title="編輯書籤"
+          >
+            <span className="material-symbols-outlined text-base">edit</span>
+          </button>
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              if (confirm('確定要刪除此書籤嗎？')) {
+                bookmarkApi.deleteBookmark(bookmark.id).then(() => refreshData());
+              }
+            }}
+            className={`p-1 ${isGlass ? (isDarkWallpaper ? 'text-red-300 hover:text-red-400' : 'text-slate-400 hover:text-red-500') : 'text-slate-400 hover:text-red-500'}`}
+            title="刪除書籤"
+          >
+            <span className="material-symbols-outlined text-base">delete</span>
+          </button>
+        </div>
+    </div>
+  );
+};
+
 export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategoryUpdated, setEditingCategory, setEditingBookmark, refreshTrigger, openAddBookmark }) => {
-  console.log(`[CategoryCard] Rendering ${category.name}, color: ${category.color}`);
   const [unifiedItems, setUnifiedItems] = useState<UnifiedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [draggedItemId, setDraggedItemId] = useState<{ id: string, type: 'Bookmark' | 'Category' } | null>(null);
-
 
   const { isDarkWallpaper } = useWallpaper();
   const contrast = getContrastColor(category.color || '#dee1ff');
@@ -79,7 +179,6 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
     setDraggedItemId({ id, type });
   };
 
-  // Use a ref to always have access to the latest unifiedItems without closure issues in async functions
   const itemsRef = React.useRef<UnifiedItem[]>([]);
 
   useEffect(() => {
@@ -95,13 +194,10 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
     e.preventDefault();
     e.stopPropagation();
     
-    console.log('onDrop triggered:', { targetId, currentCatId, draggedItemId });
-
     if (!draggedItemId || (draggedItemId.id === targetId)) return;
 
     const getParentId = (item: UnifiedItem) => {
       if (!item.data) return null;
-      // Try all possible parent id keys as the API/Entity might vary
       return item.data.categoriesId || item.data.parentId || item.data.categoryId;
     };
 
@@ -110,20 +206,10 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
       .filter(item => getParentId(item) === currentCatId)
       .sort((a, b) => a.sortOrder - b.sortOrder);
 
-    console.log('Direct children for category', currentCatId, directChildren);
-
     const draggedIdx = directChildren.findIndex(i => i.itemId === draggedItemId!.id);
     const targetIdx = directChildren.findIndex(i => i.itemId === targetId);
 
-    if (draggedIdx === -1 || targetIdx === -1) {
-      console.error('Drag and drop failed: item not found in current category', {
-        draggedId: draggedItemId!.id,
-        targetId,
-        currentCatId,
-        childrenIds: directChildren.map(c => c.itemId)
-      });
-      return;
-    }
+    if (draggedIdx === -1 || targetIdx === -1) return;
 
     const updatedList = [...directChildren];
     const [draggedItem] = updatedList.splice(draggedIdx, 1);
@@ -135,7 +221,6 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
         type: item.type,
         sortOrder: index
       })));
-      console.log('API update successful');
     } catch (err) {
       console.error('Failed to update unified order', err);
       refreshData();
@@ -155,67 +240,8 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
     setDraggedItemId(null);
   };
 
-
   const openAddBookmarkInternal = (catId: string) => {
     openAddBookmark(catId);
-  };
-
-  const renderBookmark = (bm: any) => {
-    const isGlass = bm?.color === 'glass';
-    const bookmarkContrast = getContrastColor(bm?.color || '#f4f2fe');
-    const bmTextColor = isGlass 
-      ? (isDarkWallpaper ? 'text-white' : 'text-slate-900') 
-      : (bookmarkContrast === 'light' ? 'text-slate-900' : 'text-white');
-    const title = bm?.title || bm?.name || '無名稱';
-
-    return (
-      <div 
-        key={bm?.id} 
-        draggable
-        onDragStart={(e) => onDragStart(e, bm?.id, 'Bookmark')}
-        onDragOver={onDragOver}
-        onDrop={(e) => onDrop(e, bm?.id, 'Bookmark', bm?.categoriesId)}
-        onClick={() => window.location.href = bm?.url}
-        className={`p-1 rounded-xl flex items-center gap-2 border transition-transform hover:-translate-y-0.5 active:scale-95 group cursor-move ${
-          isGlass 
-          ? 'bg-white/20 border-white/30 backdrop-blur-sm hover:bg-white/40' 
-          : 'border-border-ring'
-        }`}
-        style={{ backgroundColor: isGlass ? 'transparent' : (bm?.color || '#f4f2fe') }}
-      >
-        <div className="flex-1 overflow-hidden">
-            <h3 className={`font-bold text-sm truncate ${bmTextColor}`}>{title}</h3>
-            <p className={`text-xs truncate mb-0.5 ${isGlass ? (isDarkWallpaper ? 'text-white/80' : 'text-slate-500') : 'text-text-secondary'}`}>
-              {bm?.subtitle || bm?.url}
-            </p>
-          </div>
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-
-           <button 
-             onClick={(e) => {
-               e.stopPropagation();
-               setEditingBookmark(bm);
-             }}
-             className={`p-1 ${isGlass ? (isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-slate-400 hover:text-primary') : 'text-slate-400 hover:text-primary'}`}
-             title="編輯書籤"
-           >
-             <span className="material-symbols-outlined text-base">edit</span>
-           </button>
-           <button 
-             onClick={(e) => {
-               e.stopPropagation();
-               if (confirm('確定要刪除此書籤嗎？')) {
-                 bookmarkApi.deleteBookmark(bm.id).then(() => refreshData());
-               }
-             }}
-             className={`p-1 ${isGlass ? (isDarkWallpaper ? 'text-red-300 hover:text-red-400' : 'text-slate-400 hover:text-red-500') : 'text-slate-400 hover:text-red-500'}`}
-             title="刪除書籤"
-           >
-             <span className="material-symbols-outlined text-base">delete</span>
-           </button>
-         </div>
-      </div>
-    );
   };
 
   return (
@@ -261,30 +287,29 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
               >
                 <span className="material-symbols-outlined text-lg">delete</span>
               </button>
- 
-              {showAddMenu && (
-                <div className="absolute top-full right-0 mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-xl py-1 z-[60] animate-in fade-in zoom-in-95 duration-100">
+  
+               {showAddMenu && (
+                 <div className="absolute top-full right-0 mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-xl py-1 z-[60] animate-in fade-in zoom-in-95 duration-100">
+                    <button 
+                      onClick={() => openAddBookmark(category.id)}
+                      className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2"
+                    >
+                      <span className="material-symbols-outlined text-lg text-slate-400">link</span>
+                      新增書籤
+                    </button>
                    <button 
-                     onClick={() => openAddBookmark(category.id)}
+                     onClick={() => {
+                       setIsAddCategoryModalOpen(true);
+                       setShowAddMenu(false);
+                     }}
                      className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2"
                    >
-                     <span className="material-symbols-outlined text-lg text-slate-400">link</span>
-                     新增書籤
+                     <span className="material-symbols-outlined text-lg text-slate-400">create_new_folder</span>
+                     新增子類別
                    </button>
-                  <button 
-                    onClick={() => {
-                      setIsAddCategoryModalOpen(true);
-                      setShowAddMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2"
-                  >
-                    <span className="material-symbols-outlined text-lg text-slate-400">create_new_folder</span>
-                    新增子類別
-                  </button>
-                </div>
-              )}
-            </div>
-
+                 </div>
+               )}
+             </div>
         </div>
         
           <div className="flex flex-col gap-3">
@@ -293,10 +318,21 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
             ) : (
               <>
                  {unifiedItems
-                   .filter(item => item.data.categoriesId === category.id)
-                   .sort((a, b) => a.sortOrder - b.sortOrder)
-                   .map(item => {
-                     if (item.type === 'Bookmark') return renderBookmark(item.data);
+                    .filter(item => item.data.categoriesId === category.id)
+                    .sort((a, b) => a.sortOrder - b.sortOrder)
+                    .map(item => {
+                      if (item.type === 'Bookmark') return (
+                        <BookmarkItem 
+                          key={item.itemId}
+                          bookmark={item.data}
+                          isDarkWallpaper={isDarkWallpaper}
+                          onDragStart={onDragStart}
+                          onDragOver={onDragOver}
+                          onDrop={onDrop}
+                          setEditingBookmark={setEditingBookmark}
+                          refreshData={refreshData}
+                        />
+                      );
                       if (item.type === 'Category') return (
                         <SubCategoryCard 
                           key={item.itemId}
@@ -304,30 +340,39 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
                           unifiedItems={unifiedItems}
                           onRefresh={refreshData}
                           onAddBookmark={openAddBookmarkInternal}
-                          renderBookmark={renderBookmark}
+                          renderBookmark={(bm) => (
+                            <BookmarkItem 
+                              bookmark={bm}
+                              isDarkWallpaper={isDarkWallpaper}
+                              onDragStart={onDragStart}
+                              onDragOver={onDragOver}
+                              onDrop={onDrop}
+                              setEditingBookmark={setEditingBookmark}
+                              refreshData={refreshData}
+                            />
+                          )}
                           onDragStart={onDragStart}
                           onDragOver={onDragOver}
                           onDrop={onDrop}
                           onEditCategory={setEditingCategory}
                         />
                       );
-                     return null;
-                   })}
-
-                
-                {unifiedItems.filter(item => item.data.categoriesId === category.id).length === 0 && (
-                  <div className="text-xs text-text-secondary italic">No bookmarks here yet.</div>
-                )}
-              </>
+                      return null;
+                    })}
+                 
+                 {unifiedItems.filter(item => item.data.categoriesId === category.id).length === 0 && (
+                   <div className="text-xs text-text-secondary italic">No bookmarks here yet.</div>
+                 )}
+               </>
             )}
           </div>
-
-          <AddCategoryModal 
-            isOpen={isAddCategoryModalOpen} 
-            onClose={() => setIsAddCategoryModalOpen(false)} 
-            onCategoryAdded={refreshData} 
-            defaultParentId={category.id}
-          />
-        </div>
-    );
-  };
+ 
+           <AddCategoryModal 
+             isOpen={isAddCategoryModalOpen} 
+             onClose={() => setIsAddCategoryModalOpen(false)} 
+             onCategoryAdded={refreshData} 
+             defaultParentId={category.id}
+           />
+         </div>
+     );
+};

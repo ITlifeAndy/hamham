@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { wallpaperApi } from '../api/wallpaper';
 import { WallpaperType } from '../types/wallpaper';
 import { useWallpaper } from '../providers/WallpaperProvider';
+import { useHostUrl } from '../hooks/useHostUrl';
 import { resolveWallpaperUrl } from '../utils/wallpaper';
 
 export const WallpaperSettingsPage: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
     const { overlayOpacity, setOverlayOpacity, updateWallpaper, setWallpaperUrl, isDarkWallpaper } = useWallpaper();
+    const hostUrl = useHostUrl();
     const [wallpaperType, setWallpaperType] = useState<WallpaperType>(WallpaperType.Unsplash);
     const [values, setValues] = useState<Partial<Record<WallpaperType, string>>>({});
     const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +22,7 @@ export const WallpaperSettingsPage: React.FC<{ onBack?: () => void }> = ({ onBac
         if (wallpaperType === WallpaperType.Unsplash) {
             updateWallpaper();
         } else if (wallpaperValue) {
-            setWallpaperUrl(resolveWallpaperUrl(wallpaperValue));
+            setWallpaperUrl(wallpaperValue);
         }
     }, [wallpaperType, wallpaperValue, setWallpaperUrl, updateWallpaper]);
 
@@ -145,25 +147,24 @@ export const WallpaperSettingsPage: React.FC<{ onBack?: () => void }> = ({ onBac
                             <input 
                                 type="file" 
                                 accept="image/*" 
-                                onChange={async (e) => {
-                                    const file = e.target.files?.[0];
-                                    if (!file) return;
-                                    
-                                     const formData = new FormData();
-                                     formData.append('File', file);
-                                     const path = await wallpaperApi.upload(formData);
-                                     if (path) {
-                                         setValues(prev => ({ ...prev, [wallpaperType]: path }));
-                                         setWallpaperUrl(resolveWallpaperUrl(path));
-                                     }
-                                }}
+                                 onChange={async (e) => {
+                                     const file = e.target.files?.[0];
+                                     if (!file) return;
+                                     
+                                      const formData = new FormData();
+                                      formData.append('File', file);
+                                      const path = await wallpaperApi.upload(formData);
+                                      if (path) {
+                                          setValues(prev => ({ ...prev, [wallpaperType]: path }));
+                                      }
+                                 }}
                                 className="hidden" 
                                 id="wallpaper-upload"
                             />
                             <label htmlFor="wallpaper-upload" className="cursor-pointer">
                                 {wallpaperValue ? (
                                     <div className="flex flex-col items-center gap-4">
-                                 <img src={resolveWallpaperUrl(wallpaperValue)} alt="Preview" className="w-32 h-32 object-cover rounded-lg shadow-md" />
+                                  <img src={resolveWallpaperUrl(wallpaperValue, hostUrl)} alt="Preview" className="w-32 h-32 object-cover rounded-lg shadow-md" />
                                  <span className="text-sm text-primary font-medium">Change image</span>
                                     </div>
                                 ) : (
@@ -245,13 +246,15 @@ export const WallpaperSettingsPage: React.FC<{ onBack?: () => void }> = ({ onBac
                     >
                         取消
                     </button>
-                    <button 
-                        onClick={handleSave}
-                        disabled={isLoading}
-                        className="px-6 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors disabled:opacity-50"
-                    >
-                        {isLoading ? 'Saving...' : '存檔'}
-                    </button>
+                     <button 
+                         onClick={handleSave}
+                         disabled={isLoading}
+                         className={`px-6 py-2 text-sm font-medium bg-primary hover:bg-primary/90 rounded-lg transition-colors disabled:opacity-50 ${
+                             isDarkWallpaper ? 'text-white' : 'text-slate-900'
+                         }`}
+                     >
+                         {isLoading ? 'Saving...' : '存檔'}
+                     </button>
                 </div>
             </div>
         </div>

@@ -240,11 +240,13 @@ export const UserManagement: React.FC = () => {
         </div>
       </div>
 
-      <AddUserModal 
-        isOpen={isAddModalOpen} 
-        onClose={() => setIsAddModalOpen(false)} 
-        onUserAdded={loadUsers} 
-      />
+       {isAddModalOpen && (
+         <AddUserModal 
+           isOpen={isAddModalOpen} 
+           onClose={() => setIsAddModalOpen(false)} 
+           onUserAdded={loadUsers} 
+         />
+       )}
       <EditUserModal 
         isOpen={isEditModalOpen} 
         onClose={() => setIsEditModalOpen(false)} 
