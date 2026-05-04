@@ -176,7 +176,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
         onDragOver={onDragOver}
         onDrop={(e) => onDrop(e, bm?.id, 'Bookmark', bm?.categoriesId)}
         onClick={() => window.location.href = bm?.url}
-        className={`p-3 rounded-xl flex items-center gap-3 border transition-transform hover:-translate-y-0.5 active:scale-95 group cursor-move ${
+        className={`p-1 rounded-xl flex items-center gap-2 border transition-transform hover:-translate-y-0.5 active:scale-95 group cursor-move ${
           isGlass 
           ? 'bg-white/20 border-white/30 backdrop-blur-sm hover:bg-white/40' 
           : 'border-border-ring'
@@ -220,7 +220,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
 
   return (
     <div 
-      className={`p-4 rounded-2xl border shadow-sm transition-all hover:shadow-md h-fit ${
+      className={`p-1 rounded-2xl border shadow-sm transition-all hover:shadow-md h-fit ${
         category.color === 'glass' 
         ? 'border-white/40 bg-white/30 backdrop-blur-md backdrop-saturate-150' 
         : 'border-white/40'
