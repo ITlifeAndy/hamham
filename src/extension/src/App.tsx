@@ -165,7 +165,9 @@ const App: React.FC = () => {
 
   const loadData = async () => {
     try {
+      console.log('[App] Loading categories...');
       const cats = await bookmarkApi.getCategories();
+      console.log('[App] Categories loaded:', cats);
       setCategories(cats);
     } catch (err: any) {
       console.error('Failed to load data', err);

@@ -40,6 +40,7 @@ interface UnifiedItem {
 }
 
 export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategoryUpdated, setEditingCategory, setEditingBookmark, refreshTrigger, openAddBookmark }) => {
+  console.log(`[CategoryCard] Rendering ${category.name}, color: ${category.color}`);
   const [unifiedItems, setUnifiedItems] = useState<UnifiedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
@@ -178,8 +179,9 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
         className={`p-3 rounded-xl flex items-center gap-3 border transition-transform hover:-translate-y-0.5 active:scale-95 group cursor-move ${
           isGlass 
           ? 'bg-white/20 border-white/30 backdrop-blur-sm hover:bg-white/40' 
-          : 'bg-white border-border-ring'
+          : 'border-border-ring'
         }`}
+        style={{ backgroundColor: isGlass ? 'transparent' : (bm?.color || '#f4f2fe') }}
       >
         <div className="flex-1 overflow-hidden">
             <h3 className={`font-bold text-sm truncate ${bmTextColor}`}>{title}</h3>

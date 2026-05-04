@@ -36,7 +36,6 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { isDarkWallpaper } = useWallpaper();
-  const isGlass = sub.color === 'glass';
   const textColor = isDarkWallpaper ? 'text-white' : 'text-on-primary-fixed-variant';
   const iconColor = isDarkWallpaper ? 'text-white' : 'text-on-primary-fixed-variant';
 
@@ -46,11 +45,8 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
       onDragStart={(e) => onDragStart(e, sub.id, 'Category')}
       onDragOver={onDragOver}
        onDrop={(e) => onDrop(e, sub.id, 'Category', sub.categoriesId || '')}
-      className={`rounded-xl p-2 border group/sub cursor-move transition-all ${
-        isGlass 
-        ? 'bg-white/20 border-white/30 backdrop-blur-sm hover:bg-white/40' 
-        : 'bg-white/40 border-white/60 hover:bg-white/60'
-      }`}
+       className={`rounded-xl p-2 border group/sub cursor-move transition-all bg-white/40 border-white/60 hover:bg-white/60`}
+
     >
       <div 
         className="flex items-center justify-between mb-2 px-1 cursor-pointer" 
@@ -69,7 +65,8 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
                e.stopPropagation();
                onEditCategory(sub);
              }}
-             className={`p-1 hover:bg-white/50 rounded-full transition-all ${isGlass ? (isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-on-primary-fixed-variant') : 'text-on-primary-fixed-variant'}`}
+              className={`p-1 hover:bg-white/50 rounded-full transition-all ${isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-on-primary-fixed-variant'}`}
+
              title="編輯類別"
            >
              <span className="material-symbols-outlined text-lg">edit</span>
