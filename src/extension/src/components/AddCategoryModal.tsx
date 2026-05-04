@@ -98,25 +98,50 @@ export const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, onCl
               ))}
             </select>
           </div>
-          {(!parentId) && (
-            <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">選擇顏色</label>
-              <div className="flex flex-col gap-3 items-center">
-                <div className="border rounded-xl p-2 bg-slate-50">
-                  <HexColorPicker color={color} onChange={setColor} />
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full border" style={{ backgroundColor: color }} />
-                  <input 
-                    type="text" 
-                    value={color} 
-                    onChange={(e) => setColor(e.target.value)} 
-                    className="text-[10px] w-20 px-2 py-1 rounded border border-slate-200 outline-none"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+           {(!parentId) && (
+             <div>
+               <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">選擇顏色 / 效果</label>
+               <div className="flex flex-col gap-3 items-center bg-slate-50 border rounded-2xl p-3">
+                 <div className="flex gap-3 w-full justify-center mb-2">
+                   <button 
+                     type="button"
+                     onClick={() => setColor('#dee1ff')}
+                     className={`px-3 py-1.5 rounded-full text-[10px] font-bold transition-all ${color === '#dee1ff' ? 'bg-primary text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                   >
+                     預設色
+                   </button>
+                   <button 
+                     type="button"
+                     onClick={() => setColor('glass')}
+                     className={`px-3 py-1.5 rounded-full text-[10px] font-bold transition-all ${color === 'glass' ? 'bg-blue-400 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                   >
+                     ✨ 玻璃效果
+                   </button>
+                 </div>
+                 {color !== 'glass' ? (
+                   <>
+                     <div className="scale-90 origin-top">
+                       <HexColorPicker color={color} onChange={setColor} />
+                     </div>
+                     <div className="flex items-center gap-2 w-full justify-center">
+                       <div className="w-4 h-4 rounded-full border shadow-sm" style={{ backgroundColor: color }} />
+                       <input 
+                         type="text" 
+                         value={color} 
+                         onChange={(e) => setColor(e.target.value)} 
+                         className="text-[10px] w-24 px-2 py-1 rounded-lg border border-slate-200 outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                       />
+                     </div>
+                   </>
+                 ) : (
+                   <div className="w-full p-4 rounded-xl border border-blue-100 bg-blue-50/50 text-center">
+                     <p className="text-[10px] text-blue-600 italic">已啟用玻璃擬態效果</p>
+                   </div>
+                 )}
+               </div>
+             </div>
+           )}
+
           {(!parentId) && (
             <div>
               <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">選擇圖標</label>

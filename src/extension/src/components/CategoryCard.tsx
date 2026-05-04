@@ -159,21 +159,22 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
     openAddBookmark(catId);
   };
 
-  const renderBookmark = (bm: Bookmark) => {
-    const isGlass = bm.color === 'glass';
-    const bookmarkContrast = getContrastColor(bm.color || '#f4f2fe');
+  const renderBookmark = (bm: any) => {
+    const isGlass = bm?.color === 'glass';
+    const bookmarkContrast = getContrastColor(bm?.color || '#f4f2fe');
     const bmTextColor = isGlass 
       ? (isDarkWallpaper ? 'text-white' : 'text-slate-900') 
       : (bookmarkContrast === 'light' ? 'text-slate-900' : 'text-white');
+    const title = bm?.title || bm?.name || '無名稱';
 
     return (
       <div 
-        key={bm.id} 
+        key={bm?.id} 
         draggable
-        onDragStart={(e) => onDragStart(e, bm.id, 'Bookmark')}
+        onDragStart={(e) => onDragStart(e, bm?.id, 'Bookmark')}
         onDragOver={onDragOver}
-        onDrop={(e) => onDrop(e, bm.id, 'Bookmark', bm.categoriesId)}
-        onClick={() => window.location.href = bm.url}
+        onDrop={(e) => onDrop(e, bm?.id, 'Bookmark', bm?.categoriesId)}
+        onClick={() => window.location.href = bm?.url}
         className={`p-3 rounded-xl flex items-center gap-3 border transition-transform hover:-translate-y-0.5 active:scale-95 group cursor-move ${
           isGlass 
           ? 'bg-white/20 border-white/30 backdrop-blur-sm hover:bg-white/40' 
@@ -181,12 +182,13 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
         }`}
       >
         <div className="flex-1 overflow-hidden">
-            <h3 className={`font-bold text-sm truncate ${bmTextColor}`}>{bm.title}</h3>
+            <h3 className={`font-bold text-sm truncate ${bmTextColor}`}>{title}</h3>
             <p className={`text-xs truncate mb-0.5 ${isGlass ? (isDarkWallpaper ? 'text-white/80' : 'text-slate-500') : 'text-text-secondary'}`}>
-              {bm.subtitle || bm.url}
+              {bm?.subtitle || bm?.url}
             </p>
           </div>
-         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+
            <button 
              onClick={(e) => {
                e.stopPropagation();

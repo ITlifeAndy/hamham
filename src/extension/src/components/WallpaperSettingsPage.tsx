@@ -62,8 +62,8 @@ export const WallpaperSettingsPage: React.FC<{ onBack?: () => void }> = ({ onBac
     };
 
     return (
-        <div className="p-6 max-w-2xl mx-auto">
-            <div className="flex items-center gap-4 mb-8">
+        <div className="p-6 max-w-2xl mx-auto overflow-y">
+            <div className="flex items-center gap-2 mb-4">
                 {onBack && (
                     <button onClick={onBack} className="p-2 hover:bg-white/10 rounded-full transition-colors">
                         <span className={`material-symbols-outlined ${isDarkWallpaper ? 'text-white' : 'text-slate-500'}`}>arrow_back</span>
@@ -72,7 +72,7 @@ export const WallpaperSettingsPage: React.FC<{ onBack?: () => void }> = ({ onBac
                 <h1 className={`text-2xl font-bold ${isDarkWallpaper ? 'text-white' : 'text-slate-900'}`}>桌布設定</h1>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-3">
                 <section className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                     <h2 className="text-lg font-semibold mb-4 text-slate-800">選擇桌布類型</h2>
                     <div className="grid grid-cols-3 gap-4">
