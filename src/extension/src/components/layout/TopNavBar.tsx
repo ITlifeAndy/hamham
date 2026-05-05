@@ -85,7 +85,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({ user, refreshUser }) => {
 
             {isMenuOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-lg py-1 z-[60] animate-in fade-in zoom-in-95 duration-100">
-                 <div className="px-4 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">版本號：1.1</div>
+                 <div className="px-4 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">版本號：1.2</div>
                  <button 
                    onClick={() => { setIsSettingsOpen(true); setIsMenuOpen(false); }}
                    className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2"
@@ -100,10 +100,10 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({ user, refreshUser }) => {
                     <span className="material-symbols-outlined text-lg">image</span>
                     設定桌布
                   </button>
-                  <button 
-                    onClick={() => { window.location.hash = '/admin/import-public'; setIsMenuOpen(false); }}
-                    className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2"
-                  >
+                   <button 
+                     onClick={() => { window.location.hash = '/import-public'; setIsMenuOpen(false); }}
+                     className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2"
+                   >
                     <span className="material-symbols-outlined text-lg">download</span>
                     導入公用書籤
                   </button>

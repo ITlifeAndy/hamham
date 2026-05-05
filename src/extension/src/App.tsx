@@ -61,24 +61,8 @@ const App: React.FC = () => {
       console.log('[RouteGuard] Checking hash:', hash, 'Role:', userRole, 'Loading:', isUserLoading);
       if (hash === '#/settings/wallpaper') {
         setView('wallpaper-settings');
-      } else if (hash === '#/admin/import-public') {
-        if (isUserLoading) {
-          console.log('[RouteGuard] User info still loading, skipping check...');
-          return;
-        }
-        
-        // 兼容性檢查：支援字串 "Admin" (不分大小寫) 或 數字 1
-        const isAdmin = userRole?.toLowerCase() === 'admin' || userRole === '1';
-        
-        if (isAdmin) {
-          console.log('[RouteGuard] Access granted to Admin');
-          setView('import-public');
-        } else {
-          console.warn('[RouteGuard] Access denied. Current role:', userRole);
-          alert('Access Denied: Administrators only.');
-          window.history.replaceState(null, '', window.location.pathname + window.location.search);
-          setView('home');
-        }
+      } else if (hash === '#/import-public') {
+        setView('import-public');
       } else if (hash === '#/admin') {
         if (isUserLoading) {
           console.log('[RouteGuard] User info still loading, skipping check...');

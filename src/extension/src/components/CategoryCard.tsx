@@ -67,10 +67,10 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const note = bookmark?.subtitle || '';
 
-  const handleCopy = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    navigator.clipboard.writeText(note);
-  };
+  // const handleCopy = (e: React.MouseEvent) => {
+  //   e.stopPropagation();
+  //   navigator.clipboard.writeText(note);
+  // };
 
   return (
     <div 
@@ -102,7 +102,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
             >
               {isExpanded ? note : (note.length > 40 ? note.substring(0, 40) + '...' : note)}
             </div>
-            {isExpanded && note && (
+            {/* {isExpanded && note && (
               <button 
                 onClick={handleCopy}
                 className={`material-symbols-outlined text-[14px] ${isGlass ? (isDarkWallpaper ? 'text-white/60 hover:text-white' : 'text-slate-400 hover:text-primary') : 'text-primary/70 hover:text-primary'}`}
@@ -110,7 +110,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
               >
                 content_copy
               </button>
-            )}
+            )} */}
           </div>
       </div>
       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
