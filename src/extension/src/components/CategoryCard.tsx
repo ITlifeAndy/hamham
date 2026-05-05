@@ -63,6 +63,9 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
   const bmTextColor = isGlass 
     ? (isDarkWallpaper ? 'text-white' : 'text-slate-900') 
     : (bookmarkContrast === 'light' ? 'text-slate-900' : 'text-white');
+  const bmNoteTextColor = isGlass 
+    ? (isDarkWallpaper ? 'text-white/80' : 'text-slate-900/80') 
+    : (bookmarkContrast === 'light' ? 'text-slate-900/80' : 'text-white/80');
   const title = bookmark?.title || bookmark?.name || '無名稱';
   const [isExpanded, setIsExpanded] = useState(false);
   const note = bookmark?.subtitle || '';
@@ -98,7 +101,8 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
                 e.stopPropagation();
                 setIsExpanded(!isExpanded);
               }}
-              className={`text-xs mb-0.5 transition-all select-text cursor-pointer ${isExpanded ? 'whitespace-pre-wrap break-words' : 'truncate'} ${isGlass ? (isDarkWallpaper ? 'text-white/80' : 'text-slate-500') : 'text-text-secondary'}`}
+               className={`text-xs mb-0.5 transition-all select-text cursor-pointer ${isExpanded ? 'whitespace-pre-wrap break-words' : 'truncate'} ${bmNoteTextColor}`}
+
             >
               {isExpanded ? note : (note.length > 40 ? note.substring(0, 40) + '...' : note)}
             </div>

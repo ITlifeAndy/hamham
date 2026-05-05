@@ -16,7 +16,7 @@ interface WallpaperContextType {
 const WallpaperContext = createContext<WallpaperContextType | undefined>(undefined);
 
 export const WallpaperProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [wallpaperUrl, setWallpaperUrl] = useState<string>('https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=1920'); // Update to a more stable URL
+    const [wallpaperUrl, setWallpaperUrl] = useState<string>('#f4f2fe'); // Default to a neutral light color instead of a hardcoded Unsplash image
     const [overlayOpacity, setOverlayOpacity] = useState(0.4);
     const [isDarkWallpaper, setIsDarkWallpaper] = useState(false);
 
