@@ -30,6 +30,8 @@ interface CategoryCardProps {
   setEditingBookmark: (bm: Bookmark | null) => void;
   refreshTrigger?: number;
   openAddBookmark: (catId: string) => void;
+  draggedItem: { id: string, type: 'Bookmark' | 'Category', categoryId: string, data?: any } | null;
+  setDraggedItem: (item: { id: string, type: 'Bookmark' | 'Category', categoryId: string, data?: any } | null) => void;
 }
 
 interface UnifiedItem {
@@ -70,18 +72,13 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const note = bookmark?.subtitle || '';
 
-  // const handleCopy = (e: React.MouseEvent) => {
-  //   e.stopPropagation();
-  //   navigator.clipboard.writeText(note);
-  // };
-
-  return (
-    <div 
-      draggable
-      onDragStart={(e) => onDragStart(e, bookmark?.id, 'Bookmark')}
-      onDragOver={onDragOver}
-      onDrop={(e) => onDrop(e, bookmark?.id, 'Bookmark', bookmark?.categoriesId)}
-      onClick={() => window.location.href = bookmark?.url}
+    return (
+      <div 
+        draggable
+        onDragStart={(e) => onDragStart(e, bookmark?.id, 'Bookmark')}
+        onDragOver={onDragOver}
+        onDrop={(e) => onDrop(e, bookmark?.id, 'Bookmark', bookmark?.categoryId)}
+        onClick={() => window.location.href = bookmark?.url}
       className={`p-1 rounded-xl flex items-center gap-2 border transition-transform hover:-translate-y-0.5 active:scale-95 group cursor-move ${
         isGlass 
         ? 'bg-white/20 border-white/30 backdrop-blur-sm hover:bg-white/40' 
@@ -101,20 +98,10 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
                 e.stopPropagation();
                 setIsExpanded(!isExpanded);
               }}
-               className={`text-xs mb-0.5 transition-all select-text cursor-pointer ${isExpanded ? 'whitespace-pre-wrap break-words' : 'truncate'} ${bmNoteTextColor}`}
-
+              className={`text-xs mb-0.5 transition-all select-text cursor-pointer ${isExpanded ? 'whitespace-pre-wrap break-words' : 'truncate'} ${bmNoteTextColor}`}
             >
               {isExpanded ? note : (note.length > 40 ? note.substring(0, 40) + '...' : note)}
             </div>
-            {/* {isExpanded && note && (
-              <button 
-                onClick={handleCopy}
-                className={`material-symbols-outlined text-[14px] ${isGlass ? (isDarkWallpaper ? 'text-white/60 hover:text-white' : 'text-slate-400 hover:text-primary') : 'text-primary/70 hover:text-primary'}`}
-                title="複製全部備註"
-              >
-                content_copy
-              </button>
-            )} */}
           </div>
       </div>
       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -145,12 +132,20 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
   );
 };
 
-export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategoryUpdated, setEditingCategory, setEditingBookmark, refreshTrigger, openAddBookmark }) => {
+export const CategoryCard: React.FC<CategoryCardProps> = ({ 
+  category, 
+  onCategoryUpdated, 
+  setEditingCategory, 
+  setEditingBookmark, 
+  refreshTrigger, 
+  openAddBookmark,
+  draggedItem,
+  setDraggedItem
+}) => {
   const [unifiedItems, setUnifiedItems] = useState<UnifiedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
-  const [draggedItemId, setDraggedItemId] = useState<{ id: string, type: 'Bookmark' | 'Category' } | null>(null);
 
   const { isDarkWallpaper } = useWallpaper();
   const contrast = getContrastColor(category.color || '#dee1ff');
@@ -180,7 +175,10 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
 
   const onDragStart = (e: React.DragEvent, id: string, type: 'Bookmark' | 'Category') => {
     e.stopPropagation();
-    setDraggedItemId({ id, type });
+    // Determine the current category ID and data of the item being dragged
+    const item = unifiedItems.find(i => i.itemId === id);
+     const categoryId = item?.data.categoryId || item?.data.categoriesId || item?.data.parentId || category.id;
+    setDraggedItem({ id, type, categoryId, data: item?.data });
   };
 
   const itemsRef = React.useRef<UnifiedItem[]>([]);
@@ -194,69 +192,109 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
     e.stopPropagation();
   };
 
-  const onDrop = async (e: React.DragEvent, targetId: string, _targetType: 'Bookmark' | 'Category', currentCatId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (!draggedItemId || (draggedItemId.id === targetId)) return;
-
-    const getParentId = (item: UnifiedItem) => {
-      if (!item.data) return null;
-      return item.data.categoriesId || item.data.parentId || item.data.categoryId;
-    };
-
-    const currentItems = itemsRef.current;
-    const directChildren = currentItems
-      .filter(item => getParentId(item) === currentCatId)
-      .sort((a, b) => a.sortOrder - b.sortOrder);
-
-    const draggedIdx = directChildren.findIndex(i => i.itemId === draggedItemId!.id);
-    const targetIdx = directChildren.findIndex(i => i.itemId === targetId);
-
-    if (draggedIdx === -1 || targetIdx === -1) return;
-
-    const updatedList = [...directChildren];
-    const [draggedItem] = updatedList.splice(draggedIdx, 1);
-    updatedList.splice(targetIdx, 0, draggedItem);
-
-    try {
-      await bookmarkApi.updateUnifiedOrder(currentCatId, updatedList.map((item, index) => ({
-        itemId: item.itemId,
-        type: item.type,
-        sortOrder: index
-      })));
-    } catch (err) {
-      console.error('Failed to update unified order', err);
-      refreshData();
-      return;
-    }
-
-    setUnifiedItems(prevItems => 
-      prevItems.map(item => {
-        if (getParentId(item) === currentCatId) {
-          const newIdx = updatedList.findIndex(i => i.itemId === item.itemId);
-          return { ...item, sortOrder: newIdx };
+    const onDrop = async (e: React.DragEvent, targetId: string, _targetType: 'Bookmark' | 'Category', targetCatId: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      if (!draggedItem || (draggedItem.id === targetId)) return;
+      
+      // Determine the correct target category ID
+      let finalTargetCatId = targetCatId;
+      if (_targetType === 'Category') {
+        finalTargetCatId = targetId;
+      } else {
+        const targetItem = unifiedItems.find(i => i.itemId === targetId);
+        if (targetItem) {
+           finalTargetCatId = targetItem.data.categoryId || targetItem.data.categoriesId || targetItem.data.parentId || targetCatId;
         }
-        return item;
-      })
-    );
-    
-    setDraggedItemId(null);
-  };
+      }
+      
+      const getParentId = (item: UnifiedItem) => {
+        if (!item.data) return null;
+         return item.data.categoryId || item.data.categoriesId || item.data.parentId;
+      };
+      
+      // Rule: Same Category -> Adjust Order
+      if (draggedItem.categoryId === finalTargetCatId) {
+        const currentItems = itemsRef.current;
+        const directChildren = currentItems
+          .filter(item => getParentId(item) === finalTargetCatId)
+          .sort((a, b) => a.sortOrder - b.sortOrder);
+      
+        const draggedIdx = directChildren.findIndex(i => i.itemId === draggedItem.id);
+        const targetIdx = directChildren.findIndex(i => i.itemId === targetId);
+      
+        if (draggedIdx === -1 || targetIdx === -1) {
+          setDraggedItem(null);
+          return;
+        }
+      
+        const updatedList = [...directChildren];
+        const [draggedItemObj] = updatedList.splice(draggedIdx, 1);
+        updatedList.splice(targetIdx, 0, draggedItemObj);
+      
+        try {
+          await bookmarkApi.updateUnifiedOrder(finalTargetCatId, updatedList.map((item, index) => ({
+            itemId: item.itemId,
+            type: item.type,
+            sortOrder: index
+          })));
+          
+          setUnifiedItems(prevItems => 
+            prevItems.map(item => {
+              if (getParentId(item) === finalTargetCatId) {
+                const newIdx = updatedList.findIndex(i => i.itemId === item.itemId);
+                return { ...item, sortOrder: newIdx };
+              }
+              return item;
+            })
+          );
+        } catch (err) {
+          console.error('Failed to update unified order', err);
+          refreshData();
+        }
+      } else {
+        // Rule: Different Category -> Move Item
+        try {
+          if (draggedItem.type === 'Bookmark') {
+            const bookmarkData = draggedItem.data || {};
+             await bookmarkApi.updateBookmark(draggedItem.id, { 
+               categoryId: finalTargetCatId,
+               title: bookmarkData.title || bookmarkData.name,
+               url: bookmarkData.url,
+               color: bookmarkData.color,
+               subtitle: bookmarkData.subtitle,
+               isFavorite: bookmarkData.isFavorite,
+             });
+          } else {
+            await bookmarkApi.updateCategory(draggedItem.id, { categoryId: finalTargetCatId });
+          }
+          
+          await refreshData();
+          onCategoryUpdated?.();
+        } catch (err) {
+          console.error('Failed to move item to different category', err);
+        }
+      }
+      
+      setDraggedItem(null);
+    };
 
   const openAddBookmarkInternal = (catId: string) => {
     openAddBookmark(catId);
   };
 
-  return (
-    <div 
-      className={`p-1 rounded-2xl border shadow-sm transition-all hover:shadow-md h-fit ${
-        category.color === 'glass' 
-        ? 'border-white/40 bg-white/30 backdrop-blur-md backdrop-saturate-150' 
-        : 'border-white/40'
-      }`}
-      style={{ backgroundColor: category.color === 'glass' ? 'transparent' : (category.color || '#dee1ff') }}
-    >
+    return (
+      <div 
+        onDragOver={onDragOver}
+        onDrop={(e) => onDrop(e, category.id, 'Category', category.id)}
+        className={`p-1 rounded-2xl border shadow-sm transition-all hover:shadow-md h-fit ${
+          category.color === 'glass' 
+          ? 'border-white/40 bg-white/30 backdrop-blur-md backdrop-saturate-150' 
+          : 'border-white/40'
+        }`}
+        style={{ backgroundColor: category.color === 'glass' ? 'transparent' : (category.color || '#dee1ff') }}
+      >
 
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-2">
@@ -322,7 +360,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
             ) : (
               <>
                  {unifiedItems
-                    .filter(item => item.data.categoriesId === category.id)
+                     .filter(item => (item.data.categoryId || item.data.categoriesId) === category.id)
                     .sort((a, b) => a.sortOrder - b.sortOrder)
                     .map(item => {
                       if (item.type === 'Bookmark') return (
@@ -330,7 +368,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
                           key={item.itemId}
                           bookmark={item.data}
                           isDarkWallpaper={isDarkWallpaper}
-                          onDragStart={onDragStart}
+                          onDragStart={(e, id, type) => onDragStart(e, id, type)}
                           onDragOver={onDragOver}
                           onDrop={onDrop}
                           setEditingBookmark={setEditingBookmark}
@@ -348,14 +386,14 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
                             <BookmarkItem 
                               bookmark={bm}
                               isDarkWallpaper={isDarkWallpaper}
-                              onDragStart={onDragStart}
+                              onDragStart={(e, id, type) => onDragStart(e, id, type)}
                               onDragOver={onDragOver}
                               onDrop={onDrop}
                               setEditingBookmark={setEditingBookmark}
                               refreshData={refreshData}
                             />
                           )}
-                          onDragStart={onDragStart}
+                          onDragStart={(e, id, type) => onDragStart(e, id, type)}
                           onDragOver={onDragOver}
                           onDrop={onDrop}
                           onEditCategory={setEditingCategory}
@@ -364,9 +402,9 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onCategory
                       return null;
                     })}
                  
-                 {unifiedItems.filter(item => item.data.categoriesId === category.id).length === 0 && (
-                   <div className="text-xs text-text-secondary italic">No bookmarks here yet.</div>
-                 )}
+                     {unifiedItems.filter(item => (item.data.categoryId || item.data.categoriesId) === category.id).length === 0 && (
+                      <div className="text-xs text-text-secondary italic"></div>
+                    )}
                </>
             )}
           </div>

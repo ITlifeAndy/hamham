@@ -36,7 +36,7 @@ const App: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [activeTab, setActiveTab] = useState('home');
   const [view, setView] = useState<'home' | 'wallpaper-settings' | 'admin' | 'import-public'>('home');
-  const [draggedCategoryId, setDraggedCategoryId] = useState<string | null>(null);
+  const [draggedItem, setDraggedItem] = useState<{ id: string, type: 'Bookmark' | 'Category', categoryId: string, data?: any } | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isUserLoading, setIsUserLoading] = useState(true);
@@ -178,8 +178,8 @@ const App: React.FC = () => {
     loadData();
   };
 
-  const onDragStart = (id: string) => {
-    setDraggedCategoryId(id);
+  const onDragStart = (id: string, type: 'Bookmark' | 'Category', categoryId: string) => {
+    setDraggedItem({ id, type, categoryId });
   };
 
   const onDragOver = (e: React.DragEvent) => {
@@ -187,17 +187,22 @@ const App: React.FC = () => {
   };
 
   const onDrop = async (targetId: string) => {
-    if (!draggedCategoryId || draggedCategoryId === targetId) return;
-
+    if (!draggedItem || draggedItem.id === targetId) return;
+    
+    // Categories are handled in CategoryCard's onDrop, but if we have a top-level 
+    // drag and drop for categories (the outer divs), we handle it here.
+    
     const categoriesCopy = [...categories];
-    const draggedIdx = categoriesCopy.findIndex(c => c.id === draggedCategoryId);
+    const draggedIdx = categoriesCopy.findIndex(c => c.id === draggedItem.id);
     const targetIdx = categoriesCopy.findIndex(c => c.id === targetId);
 
-    const [draggedItem] = categoriesCopy.splice(draggedIdx, 1);
-    categoriesCopy.splice(targetIdx, 0, draggedItem);
+    if (draggedIdx === -1 || targetIdx === -1) return;
+
+    const [draggedItemObj] = categoriesCopy.splice(draggedIdx, 1);
+    categoriesCopy.splice(targetIdx, 0, draggedItemObj);
 
     setCategories(categoriesCopy);
-    setDraggedCategoryId(null);
+    setDraggedItem(null);
 
     try {
       // Update sortOrder for all affected categories
@@ -242,17 +247,17 @@ const App: React.FC = () => {
               </section>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
-                {categories.filter(c => !c.categoriesId).map((category) => (
-                                <div 
-                                  key={category.id} 
-                                  draggable 
-                                  onDragStart={() => onDragStart(category.id)} 
-                                  onDragOver={onDragOver} 
-                                  onDrop={() => onDrop(category.id)}
-                                  className="cursor-move"
-                                >
-                                   <CategoryCard category={category} onCategoryUpdated={loadData} setEditingCategory={setEditingCategory} setEditingBookmark={setEditingBookmark} refreshTrigger={refreshTrigger} openAddBookmark={openAddBookmark} />
-                                </div>
+                  {categories.filter(c => !c.categoryId && !c.categoriesId).map((category) => (
+                                   <div 
+                                     key={category.id} 
+                                     draggable 
+                                     onDragStart={() => onDragStart(category.id, 'Category', category.categoryId || '')} 
+                                     onDragOver={onDragOver} 
+                                     onDrop={() => onDrop(category.id)}
+                                     className="cursor-move"
+                                   >
+                                   <CategoryCard category={category} onCategoryUpdated={loadData} setEditingCategory={setEditingCategory} setEditingBookmark={setEditingBookmark} refreshTrigger={refreshTrigger} openAddBookmark={openAddBookmark} draggedItem={draggedItem} setDraggedItem={setDraggedItem} />
+                                 </div>
                 ))}
 
                 <div

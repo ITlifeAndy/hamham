@@ -32,17 +32,17 @@ export const EditBookmarkModal: React.FC<EditBookmarkModalProps> = ({ isOpen, on
 
     setLoading(true);
     setError('');
-      try {
-          await bookmarkApi.updateBookmark(bookmark.id, {
-            title,
-            subtitle,
-            url,
-            categoryId: bookmark.categoriesId,
-            color,
-          } as any);
-        onBookmarkUpdated();
-        onClose();
-      } catch (err) {
+           try {
+               await bookmarkApi.updateBookmark(bookmark.id, {
+                 title,
+                 subtitle,
+                 url,
+                 categoryId: bookmark.categoryId || (bookmark as any).categoriesId,
+                 color,
+               } as any);
+               onBookmarkUpdated();
+               onClose();
+           } catch (err) {
       setError('更新書籤失敗，請稍後再試');
     } finally {
       setLoading(false);

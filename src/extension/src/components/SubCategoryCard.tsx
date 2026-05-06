@@ -39,14 +39,13 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
   const textColor = isDarkWallpaper ? 'text-white' : 'text-on-primary-fixed-variant';
   const iconColor = isDarkWallpaper ? 'text-white' : 'text-on-primary-fixed-variant';
 
-  return (
-    <div 
-      draggable
-      onDragStart={(e) => onDragStart(e, sub.id, 'Category')}
-      onDragOver={onDragOver}
-       onDrop={(e) => onDrop(e, sub.id, 'Category', sub.categoriesId || '')}
-       className={`rounded-xl p-2 border group/sub cursor-move transition-all bg-white/40 border-white/60 hover:bg-white/60`}
-
+    return (
+      <div 
+        draggable
+        onDragStart={(e) => onDragStart(e, sub.id, 'Category')}
+        onDragOver={onDragOver}
+        onDrop={(e) => onDrop(e, sub.id, 'Category', sub.categoryId || '')}
+        className={`rounded-xl p-2 border group/sub cursor-move transition-all bg-white/40 border-white/60 hover:bg-white/60`}
     >
       <div 
         className="flex items-center justify-between mb-2 px-1 cursor-pointer" 
@@ -54,7 +53,7 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
       >
          <div className="flex items-center gap-1.5">
            <i className={`fa-solid ${isExpanded ? 'fa-folder-open' : 'fa-folder'} text-[14px] ${iconColor} transition-transform ${isExpanded ? 'rotate-0' : 'rotate-0'}`}></i>
-           <span className={`text-[10px] uppercase tracking-wider font-bold ${textColor}`}>{sub.name}</span>
+           <span className={`text-[12px] uppercase tracking-wider font-bold ${textColor}`}>{sub.name}</span>
            <i className={`material-symbols-outlined text-xs ${iconColor} transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
              expand_more
            </i>
@@ -97,18 +96,18 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
 
       </div>
       
-      {isExpanded && (
-        <div className="flex flex-col gap-1.5 pl-1 border-l-2 border-primary/10 ml-2 animate-in slide-in-from-top-2 duration-200">
-          {unifiedItems
-            .filter(item => item.type === 'Bookmark' && item.data.categoriesId === sub.id)
-            .sort((a, b) => a.sortOrder - b.sortOrder)
-            .map(item => renderBookmark(item.data))}
-          {unifiedItems
-            .filter(item => item.type === 'Bookmark' && item.data.categoriesId === sub.id).length === 0 && (
-              <div className="text-[10px] text-slate-400 italic px-2 py-1">No bookmarks</div>
-            )}
-        </div>
-      )}
+       {isExpanded && (
+         <div className="flex flex-col gap-1.5 pl-1 border-l-2 border-primary/10 ml-2 animate-in slide-in-from-top-2 duration-200">
+           {unifiedItems
+              .filter(item => item.type === 'Bookmark' && (item.data.categoryId || item.data.categoriesId) === sub.id)
+             .sort((a, b) => a.sortOrder - b.sortOrder)
+             .map(item => renderBookmark(item.data))}
+           {unifiedItems
+             .filter(item => item.type === 'Bookmark' && item.data.categoryId === sub.id).length === 0 && (
+               <div className="text-[10px] text-slate-400 italic px-2 py-1"></div>
+             )}
+         </div>
+       )}
     </div>
   );
 };

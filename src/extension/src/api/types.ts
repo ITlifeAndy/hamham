@@ -24,6 +24,7 @@ export interface Category {
   icon?: string;
   sortOrder: number;
   parentId?: string;
+  categoryId?: string;
   categoriesId?: string;
   count?: number;
   usersId?: string;
@@ -36,7 +37,7 @@ export interface Bookmark {
   url: string;
   faviconUrl?: string;
   isFavorite: boolean;
-  categoriesId: string;
+  categoryId: string;
   icon?: string;
   color?: string;
 }
