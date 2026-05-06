@@ -67,6 +67,11 @@ namespace HamHam.Infrastructure.Services
             var pref = await _context.UserPreferences.FirstOrDefaultAsync(p => p.UsersId == userId);
             if (pref == null) return "https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=1920";
         
+            if (pref.WallpaperType != WallpaperType.Unsplash)
+            {
+                return pref.WallpaperValue;
+            }
+
             var source = pref.WallpaperSource;
             var keywords = pref.WallpaperKeywords;
             
