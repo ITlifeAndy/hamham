@@ -14,7 +14,7 @@ interface EditCategoryModalProps {
 export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ isOpen, onClose, onCategoryUpdated, category }) => {
   const [name, setName] = useState(category.name);
   const [color, setColor] = useState(category.color);
-  const [categoryId, setCategoryId] = useState(category.categoryId || '');
+  const [parentId, setParentId] = useState(category.categoriesId || category.categoryId || '');
   const [icon, setIcon] = useState(category.icon || '');
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ isOpen, on
     if (isOpen) {
       setName(category.name);
       setColor(category.color);
-      setCategoryId(category.categoryId || '');
+       setParentId(category.categoriesId || category.categoryId || '');
       setIcon(category.icon || '');
       
       bookmarkApi.getCategories().then(cats => {
@@ -40,12 +40,12 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ isOpen, on
     setLoading(true);
     setError('');
     try {
-      await bookmarkApi.updateCategory(category.id, {
-        name,
-        color,
-        categoryId: categoryId || undefined,
-        icon
-      });
+       await bookmarkApi.updateCategory(category.id, {
+         name,
+         color,
+         parentId: parentId || undefined,
+         icon
+       });
       onCategoryUpdated();
       onClose();
     } catch (err) {
@@ -80,11 +80,11 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ isOpen, on
 
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">父類別 (可選)</label>
-            <select
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full px-4 py-2 rounded-xl border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-            >
+             <select
+               value={parentId}
+               onChange={(e) => setParentId(e.target.value)}
+               className="w-full px-4 py-2 rounded-xl border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+             >
               <option value="">無 (根類別)</option>
               {categories
                 .filter(cat => cat.id !== category.id)
@@ -93,7 +93,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ isOpen, on
                 ))
               }
             </select>
-            {!categoryId && <p className="text-[10px] text-slate-400 italic mt-1">此類別為頂層類別</p>}
+             {!parentId && <p className="text-[10px] text-slate-400 italic mt-1">此類別為頂層類別</p>}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
