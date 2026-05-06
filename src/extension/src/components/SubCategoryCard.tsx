@@ -59,15 +59,14 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
            </i>
          </div>
         <div className="flex items-center gap-1">
-           <button 
-             onClick={(e) => {
-               e.stopPropagation();
-               onEditCategory(sub);
-             }}
-              className={`p-1 hover:bg-white/50 rounded-full transition-all ${isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-on-primary-fixed-variant'}`}
-
-             title="編輯類別"
-           >
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                onEditCategory(sub);
+              }}
+               className={`opacity-0 group-hover/sub:opacity-100 p-1 hover:bg-white/50 rounded-full transition-all ${isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-on-primary-fixed-variant'}`}
+              title="編輯類別"
+            >
              <span className="material-symbols-outlined text-lg">edit</span>
            </button>
            <button 
