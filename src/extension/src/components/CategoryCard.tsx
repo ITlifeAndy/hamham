@@ -256,19 +256,25 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
       } else {
         // Rule: Different Category -> Move Item
         try {
-          if (draggedItem.type === 'Bookmark') {
-            const bookmarkData = draggedItem.data || {};
-             await bookmarkApi.updateBookmark(draggedItem.id, { 
-               categoryId: finalTargetCatId,
-               title: bookmarkData.title || bookmarkData.name,
-               url: bookmarkData.url,
-               color: bookmarkData.color,
-               subtitle: bookmarkData.subtitle,
-               isFavorite: bookmarkData.isFavorite,
-             });
-          } else {
-            await bookmarkApi.updateCategory(draggedItem.id, { categoryId: finalTargetCatId });
-          }
+           if (draggedItem.type === 'Bookmark') {
+             const bookmarkData = draggedItem.data || {};
+              await bookmarkApi.updateBookmark(draggedItem.id, { 
+                categoryId: finalTargetCatId,
+                title: bookmarkData.title || bookmarkData.name,
+                url: bookmarkData.url,
+                color: bookmarkData.color,
+                subtitle: bookmarkData.subtitle,
+                isFavorite: bookmarkData.isFavorite,
+              });
+            } else {
+              const categoryData = draggedItem.data || {};
+              await bookmarkApi.updateCategory(draggedItem.id, { 
+                parentId: finalTargetCatId,
+                name: categoryData.name,
+                color: categoryData.color,
+                icon: categoryData.icon,
+              });
+            }
           
           await refreshData();
           onCategoryUpdated?.();
