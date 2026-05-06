@@ -10,7 +10,7 @@ interface AuthModalProps {
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const [form, setForm] = useState({ name: '', username: '', email: '', password: '', hostUrl: '' });
+  const [form, setForm] = useState({ name: '', username: '', email: '', password: '', hostUrl: 'https://hamham.newcity.com.tw' });
 
   useEffect(() => {
     if (isOpen) {
@@ -72,14 +72,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
           {isLogin ? 'Welcome Back' : 'Create Account'}
         </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              placeholder="主機 URL (e.g. https://api.hamham.com)"
-              className="w-full p-3 border rounded-xl"
-              value={form.hostUrl}
-              onChange={e => setForm({...form, hostUrl: e.target.value})}
-              required
-            />
+             <input
+               type="text"
+               placeholder="主機 URL (e.g. https://api.hamham.com)"
+               className="hidden w-full p-3 border rounded-xl"
+               value={form.hostUrl}
+               onChange={e => setForm({...form, hostUrl: e.target.value})}
+               required
+             />
             {!isLogin && (
               <>
                 <input
