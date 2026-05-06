@@ -302,12 +302,12 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
         style={{ backgroundColor: category.color === 'glass' ? 'transparent' : (category.color || '#dee1ff') }}
       >
 
-      <div className="flex justify-between items-center mb-4">
+       <div className="flex justify-between items-center mb-4 group/cat-header">
         <div className="flex items-center gap-2">
           <i className={`${(category as any).icon || 'fa-solid fa-folder'} ${iconColor} text-xl`}></i>
           <h2 className={`font-feature-label text-base ${textColor}`}>{category.name}</h2>
         </div>
-         <div className="flex items-center gap-1 relative">
+          <div className="flex items-center gap-1 relative opacity-0 group-hover/cat-header:opacity-100 transition-opacity">
               <button 
                 onClick={() => setShowAddMenu(!showAddMenu)}
                 className={`p-1 ${hoverBg} rounded-full transition-colors ${iconColor}`}

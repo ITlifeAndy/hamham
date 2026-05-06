@@ -45,12 +45,12 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
         onDragStart={(e) => onDragStart(e, sub.id, 'Category')}
         onDragOver={onDragOver}
         onDrop={(e) => onDrop(e, sub.id, 'Category', sub.categoryId || '')}
-        className={`rounded-xl p-1 border group/sub cursor-move transition-all bg-white/40 border-white/60 hover:bg-white/60`}
+         className={`rounded-xl p-1 border cursor-move transition-all bg-white/40 border-white/60 hover:bg-white/60`}
     >
-      <div 
-        className="flex items-center justify-between mb-1 px-1 cursor-pointer" 
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
+       <div 
+         className="flex items-center justify-between mb-1 px-1 cursor-pointer group/sub-header" 
+         onClick={() => setIsExpanded(!isExpanded)}
+       >
          <div className="flex items-center gap-1.5">
            <i className={`fa-solid ${isExpanded ? 'fa-folder-open' : 'fa-folder'} text-[14px] ${iconColor} transition-transform ${isExpanded ? 'rotate-0' : 'rotate-0'}`}></i>
            <span className={`text-[12px] uppercase tracking-wider font-bold ${textColor}`}>{sub.name}</span>
@@ -64,7 +64,7 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
                 e.stopPropagation();
                 onEditCategory(sub);
               }}
-               className={`opacity-0 group-hover/sub:opacity-100 p-1 hover:bg-white/50 rounded-full transition-all ${isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-on-primary-fixed-variant'}`}
+                className={`opacity-0 group-hover/sub-header:opacity-100 p-1 hover:bg-white/50 rounded-full transition-all ${isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-on-primary-fixed-variant'}`}
               title="編輯類別"
             >
              <span className="material-symbols-outlined text-lg">edit</span>
@@ -74,7 +74,7 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
                e.stopPropagation();
                onAddBookmark(sub.id);
              }}
-             className={`opacity-0 group-hover/sub:opacity-100 p-1 hover:bg-white/50 rounded-full transition-all ${isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-on-primary-fixed-variant'}`}
+              className={`opacity-0 group-hover/sub-header:opacity-100 p-1 hover:bg-white/50 rounded-full transition-all ${isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-on-primary-fixed-variant'}`}
              title="新增書籤"
            >
              <span className="material-symbols-outlined text-lg">add</span>
@@ -86,7 +86,7 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
                 bookmarkApi.deleteCategory(sub.id).then(() => onRefresh());
               }
             }}
-            className="opacity-0 group-hover/sub:opacity-100 p-0.5 hover:bg-white/50 rounded transition-all text-red-500"
+             className="opacity-0 group-hover/sub-header:opacity-100 p-0.5 hover:bg-white/50 rounded transition-all text-red-500"
             title="刪除類別"
           >
             <span className="material-symbols-outlined text-sm">delete</span>
