@@ -45,10 +45,10 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
         onDragStart={(e) => onDragStart(e, sub.id, 'Category')}
         onDragOver={onDragOver}
         onDrop={(e) => onDrop(e, sub.id, 'Category', sub.categoryId || '')}
-        className={`rounded-xl p-2 border group/sub cursor-move transition-all bg-white/40 border-white/60 hover:bg-white/60`}
+        className={`rounded-xl p-1 border group/sub cursor-move transition-all bg-white/40 border-white/60 hover:bg-white/60`}
     >
       <div 
-        className="flex items-center justify-between mb-2 px-1 cursor-pointer" 
+        className="flex items-center justify-between mb-1 px-1 cursor-pointer" 
         onClick={() => setIsExpanded(!isExpanded)}
       >
          <div className="flex items-center gap-1.5">
