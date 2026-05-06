@@ -129,10 +129,20 @@ namespace HamHam.Infrastructure.Services
         
             pref.WallpaperType = request.Type;
             pref.WallpaperValue = request.Value;
-            pref.WallpaperSource = request.Source;
-            pref.WallpaperKeywords = request.Keywords;
-            pref.RotationInterval = request.RotationInterval;
             pref.OverlayOpacity = request.OverlayOpacity;
+
+            if (request.Type == WallpaperType.Unsplash)
+            {
+                pref.WallpaperSource = request.Source;
+                pref.WallpaperKeywords = request.Keywords;
+                pref.RotationInterval = request.RotationInterval;
+            }
+            else
+            {
+                pref.WallpaperSource = WallpaperSource.Custom;
+                pref.WallpaperKeywords = Array.Empty<string>();
+                pref.RotationInterval = 24;
+            }
     
             await _context.SaveChangesAsync();
         }
