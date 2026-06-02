@@ -80,6 +80,7 @@ namespace HamHam.Infrastructure.Services
                 CategoriesId = finalCategoryId,
                 Icon = request.icon,
                 Color = request.color,
+                TextColor = request.textColor,
                 SortOrder = maxSortOrder + 1
             };
 
@@ -119,6 +120,7 @@ namespace HamHam.Infrastructure.Services
             bookmark.CategoriesId = finalCategoryId;
             bookmark.Icon = request.icon;
             bookmark.Color = request.color;
+            bookmark.TextColor = request.textColor;
             bookmark.IsFavorite = request.IsFavorite;
 
             await _context.SaveChangesAsync();

@@ -36,8 +36,11 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { isDarkWallpaper } = useWallpaper();
-  const textColor = isDarkWallpaper ? 'text-white' : 'text-on-primary-fixed-variant';
-  const iconColor = isDarkWallpaper ? 'text-white' : 'text-on-primary-fixed-variant';
+  const autoTextColor = isDarkWallpaper ? 'text-white' : 'text-on-primary-fixed-variant';
+  const autoIconColor = isDarkWallpaper ? 'text-white' : 'text-on-primary-fixed-variant';
+  
+  const finalTextColor = sub.textColor || autoTextColor;
+  const finalIconColor = sub.textColor || autoIconColor;
 
     return (
       <div 
@@ -51,34 +54,36 @@ export const SubCategoryCard: React.FC<SubCategoryCardProps> = ({
          className="flex items-center justify-between mb-1 px-1 cursor-pointer group/sub-header" 
          onClick={() => setIsExpanded(!isExpanded)}
        >
-         <div className="flex items-center gap-1.5">
-           <i className={`fa-solid ${isExpanded ? 'fa-folder-open' : 'fa-folder'} text-[14px] ${iconColor} transition-transform ${isExpanded ? 'rotate-0' : 'rotate-0'}`}></i>
-           <span className={`text-[12px] uppercase tracking-wider font-bold ${textColor}`}>{sub.name}</span>
-           <i className={`material-symbols-outlined text-xs ${iconColor} transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
-             expand_more
-           </i>
-         </div>
+          <div className="flex items-center gap-1.5">
+            <i className={`fa-solid ${isExpanded ? 'fa-folder-open' : 'fa-folder'} text-[14px] ${sub.textColor ? '' : finalIconColor} transition-transform ${isExpanded ? 'rotate-0' : 'rotate-0'}`} style={sub.textColor ? { color: sub.textColor } : {}}></i>
+            <span className={`text-[12px] uppercase tracking-wider font-bold ${sub.textColor ? '' : finalTextColor}`} style={sub.textColor ? { color: sub.textColor } : {}}>{sub.name}</span>
+            <i className={`material-symbols-outlined text-xs ${sub.textColor ? '' : finalIconColor} transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} style={sub.textColor ? { color: sub.textColor } : {}}>
+              expand_more
+            </i>
+          </div>
         <div className="flex items-center gap-1">
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                onEditCategory(sub);
-              }}
-                className={`opacity-0 group-hover/sub-header:opacity-100 p-1 hover:bg-white/50 rounded-full transition-all ${isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-on-primary-fixed-variant'}`}
-              title="編輯類別"
-            >
-             <span className="material-symbols-outlined text-lg">edit</span>
-           </button>
-           <button 
-             onClick={(e) => {
-               e.stopPropagation();
-               onAddBookmark(sub.id);
-             }}
-              className={`opacity-0 group-hover/sub-header:opacity-100 p-1 hover:bg-white/50 rounded-full transition-all ${isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-on-primary-fixed-variant'}`}
-             title="新增書籤"
-           >
-             <span className="material-symbols-outlined text-lg">add</span>
-           </button>
+               <button 
+                 onClick={(e) => {
+                   e.stopPropagation();
+                   onEditCategory(sub);
+                 }}
+                   className={`opacity-0 group-hover/sub-header:opacity-100 p-1 hover:bg-white/50 rounded-full transition-all ${sub.textColor ? '' : (isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-on-primary-fixed-variant')}`}
+                   style={sub.textColor ? { color: sub.textColor } : {}}
+                   title="編輯類別"
+                 >
+                  <span className="material-symbols-outlined text-lg">edit</span>
+                </button>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAddBookmark(sub.id);
+                  }}
+                   className={`opacity-0 group-hover/sub-header:opacity-100 p-1 hover:bg-white/50 rounded-full transition-all ${sub.textColor ? '' : (isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-on-primary-fixed-variant')}`}
+                   style={sub.textColor ? { color: sub.textColor } : {}}
+                  title="新增書籤"
+                >
+                  <span className="material-symbols-outlined text-lg">add</span>
+                </button>
           <button 
             onClick={(e) => {
               e.stopPropagation();

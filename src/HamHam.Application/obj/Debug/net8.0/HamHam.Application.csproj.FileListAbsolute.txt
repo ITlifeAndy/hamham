@@ -1,0 +1,15 @@
+D:\My Project\HamHam\src\HamHam.Application\bin\Debug\net8.0\HamHam.Application.deps.json
+D:\My Project\HamHam\src\HamHam.Application\bin\Debug\net8.0\HamHam.Application.dll
+D:\My Project\HamHam\src\HamHam.Application\bin\Debug\net8.0\HamHam.Application.pdb
+D:\My Project\HamHam\src\HamHam.Application\bin\Debug\net8.0\HamHam.Domain.dll
+D:\My Project\HamHam\src\HamHam.Application\bin\Debug\net8.0\HamHam.Domain.pdb
+D:\My Project\HamHam\src\HamHam.Application\obj\Debug\net8.0\HamHam.Application.csproj.AssemblyReference.cache
+D:\My Project\HamHam\src\HamHam.Application\obj\Debug\net8.0\HamHam.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\My Project\HamHam\src\HamHam.Application\obj\Debug\net8.0\HamHam.Application.AssemblyInfoInputs.cache
+D:\My Project\HamHam\src\HamHam.Application\obj\Debug\net8.0\HamHam.Application.AssemblyInfo.cs
+D:\My Project\HamHam\src\HamHam.Application\obj\Debug\net8.0\HamHam.Application.csproj.CoreCompileInputs.cache
+D:\My Project\HamHam\src\HamHam.Application\obj\Debug\net8.0\HamHam.A.2674B2A8.Up2Date
+D:\My Project\HamHam\src\HamHam.Application\obj\Debug\net8.0\HamHam.Application.dll
+D:\My Project\HamHam\src\HamHam.Application\obj\Debug\net8.0\refint\HamHam.Application.dll
+D:\My Project\HamHam\src\HamHam.Application\obj\Debug\net8.0\HamHam.Application.pdb
+D:\My Project\HamHam\src\HamHam.Application\obj\Debug\net8.0\ref\HamHam.Application.dll

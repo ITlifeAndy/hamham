@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "KVGfKkompDQ=",
+  "success": true,
+  "projectFilePath": "D:\\My Project\\HamHam\\src\\HamHam.Domain\\HamHam.Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\wefuw\\.nuget\\packages\\microsoft.net.illink.tasks\\8.0.19\\microsoft.net.illink.tasks.8.0.19.nupkg.sha512",
+    "C:\\Users\\wefuw\\.nuget\\packages\\microsoft.netcore.app.runtime.linux-x64\\8.0.19\\microsoft.netcore.app.runtime.linux-x64.8.0.19.nupkg.sha512",
+    "C:\\Users\\wefuw\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.linux-x64\\8.0.19\\microsoft.aspnetcore.app.runtime.linux-x64.8.0.19.nupkg.sha512"
+  ],
+  "logs": []
+}

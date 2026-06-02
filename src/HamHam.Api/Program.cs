@@ -114,13 +114,17 @@ app.UseAuthorization();
 
 app.MapGet("/debug-ping", () => "pong");
 
-// Seed default admin account
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<HamHamDbContext>();
-    var seeder = scope.ServiceProvider.GetRequiredService<UserSeeder>();
-    await seeder.SeedAsync();
-}
+ // Seed default admin account
+ using (var scope = app.Services.CreateScope())
+ {
+     var context = scope.ServiceProvider.GetRequiredService<HamHamDbContext>();
+     
+     // Automatically apply pending migrations on startup
+     await context.Database.MigrateAsync();
+     
+     var seeder = scope.ServiceProvider.GetRequiredService<UserSeeder>();
+     await seeder.SeedAsync();
+ }
 
 // Auth Endpoints (Minimal API)
 app.MapPost("/api/auth/register", async (HamHamDbContext db, IAuthService authService, HamHam.Api.Controllers.RegisterRequest request) =>

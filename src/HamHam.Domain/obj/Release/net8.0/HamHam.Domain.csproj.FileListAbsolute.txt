@@ -1,0 +1,11 @@
+D:\My Project\HamHam\src\HamHam.Domain\bin\Release\net8.0\HamHam.Domain.deps.json
+D:\My Project\HamHam\src\HamHam.Domain\bin\Release\net8.0\HamHam.Domain.dll
+D:\My Project\HamHam\src\HamHam.Domain\bin\Release\net8.0\HamHam.Domain.pdb
+D:\My Project\HamHam\src\HamHam.Domain\obj\Release\net8.0\HamHam.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\My Project\HamHam\src\HamHam.Domain\obj\Release\net8.0\HamHam.Domain.AssemblyInfoInputs.cache
+D:\My Project\HamHam\src\HamHam.Domain\obj\Release\net8.0\HamHam.Domain.AssemblyInfo.cs
+D:\My Project\HamHam\src\HamHam.Domain\obj\Release\net8.0\HamHam.Domain.csproj.CoreCompileInputs.cache
+D:\My Project\HamHam\src\HamHam.Domain\obj\Release\net8.0\HamHam.Domain.dll
+D:\My Project\HamHam\src\HamHam.Domain\obj\Release\net8.0\refint\HamHam.Domain.dll
+D:\My Project\HamHam\src\HamHam.Domain\obj\Release\net8.0\HamHam.Domain.pdb
+D:\My Project\HamHam\src\HamHam.Domain\obj\Release\net8.0\ref\HamHam.Domain.dll

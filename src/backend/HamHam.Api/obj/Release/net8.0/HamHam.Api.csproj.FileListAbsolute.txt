@@ -1,0 +1,8 @@
+D:\My Project\HamHam\src\backend\HamHam.Api\obj\Release\net8.0\HamHam.Api.csproj.AssemblyReference.cache
+D:\My Project\HamHam\src\backend\HamHam.Api\obj\Release\net8.0\rpswa.dswa.cache.json
+D:\My Project\HamHam\src\backend\HamHam.Api\obj\Release\net8.0\HamHam.Api.GeneratedMSBuildEditorConfig.editorconfig
+D:\My Project\HamHam\src\backend\HamHam.Api\obj\Release\net8.0\HamHam.Api.AssemblyInfoInputs.cache
+D:\My Project\HamHam\src\backend\HamHam.Api\obj\Release\net8.0\HamHam.Api.AssemblyInfo.cs
+D:\My Project\HamHam\src\backend\HamHam.Api\obj\Release\net8.0\HamHam.Api.csproj.CoreCompileInputs.cache
+D:\My Project\HamHam\src\backend\HamHam.Api\obj\Release\net8.0\HamHam.Api.MvcApplicationPartsAssemblyInfo.cs
+D:\My Project\HamHam\src\backend\HamHam.Api\obj\Release\net8.0\HamHam.Api.MvcApplicationPartsAssemblyInfo.cache

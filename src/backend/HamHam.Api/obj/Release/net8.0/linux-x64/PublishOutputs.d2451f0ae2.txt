@@ -1,0 +1,3 @@
+D:\My Project\HamHam\publish\appsettings.json
+D:\My Project\HamHam\publish\HamHam.Api.pdb
+D:\My Project\HamHam\publish\HamHam.Api

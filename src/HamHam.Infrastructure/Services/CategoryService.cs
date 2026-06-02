@@ -80,6 +80,7 @@ namespace HamHam.Infrastructure.Services
                 Color = request.Color,
                 CategoriesId = request.ParentId,
                 Icon = request.Icon,
+                TextColor = request.TextColor,
                 SortOrder = maxSortOrder + 1
             };
 
@@ -102,6 +103,7 @@ namespace HamHam.Infrastructure.Services
             category.Color = request.Color;
             category.CategoriesId = request.ParentId;
             category.Icon = request.Icon;
+            category.TextColor = request.TextColor;
             if (request.SortOrder.HasValue)
             {
                 category.SortOrder = request.SortOrder.Value;

@@ -16,8 +16,8 @@ namespace HamHam.Application.Interfaces
         Task UpdateCategoryOrderAsync(Guid userId, IEnumerable<CategoryOrderRequest> orders);
     }
 
-    public record CreateCategoryRequest(string Name, string Color, Guid? ParentId, string? Icon);
-    public record UpdateCategoryRequest(string Name, string Color, Guid? ParentId, string? Icon, int? SortOrder);
+    public record CreateCategoryRequest(string Name, string Color, Guid? ParentId, string? Icon, string? TextColor);
+    public record UpdateCategoryRequest(string Name, string Color, Guid? ParentId, string? Icon, int? SortOrder, string? TextColor);
     public record UnifiedOrderRequest(Guid ItemId, string Type, int SortOrder);
     public record CategoryOrderRequest(Guid CategoryId, int SortOrder);
     public record UnifiedItem(Guid ItemId, string Type, int SortOrder, object Data);

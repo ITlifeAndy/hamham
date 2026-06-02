@@ -71,6 +71,9 @@ namespace HamHam.Infrastructure.Migrations
                     b.Property<string>("Subtitle")
                         .HasColumnType("text");
 
+                    b.Property<string>("TextColor")
+                        .HasColumnType("text");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -135,6 +138,9 @@ namespace HamHam.Infrastructure.Migrations
 
                     b.Property<int>("SortOrder")
                         .HasColumnType("integer");
+
+                    b.Property<string>("TextColor")
+                        .HasColumnType("text");
 
                     b.Property<Guid>("UsersId")
                         .HasColumnType("uuid");

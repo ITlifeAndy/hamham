@@ -52,23 +52,27 @@ interface BookmarkItemProps {
 }
 
 const BookmarkItem: React.FC<BookmarkItemProps> = ({ 
-  bookmark, 
-  isDarkWallpaper, 
-  onDragStart, 
-  onDragOver, 
-  onDrop, 
-  setEditingBookmark, 
-  refreshData 
-}) => {
-  const isGlass = bookmark?.color === 'glass';
-  const bookmarkContrast = getContrastColor(bookmark?.color || '#f4f2fe');
-  const bmTextColor = isGlass 
-    ? (isDarkWallpaper ? 'text-white' : 'text-slate-900') 
-    : (bookmarkContrast === 'light' ? 'text-slate-900' : 'text-white');
-  const bmNoteTextColor = isGlass 
-    ? (isDarkWallpaper ? 'text-white/80' : 'text-slate-900/80') 
-    : (bookmarkContrast === 'light' ? 'text-slate-900/80' : 'text-white/80');
-  const title = bookmark?.title || bookmark?.name || '無名稱';
+   bookmark, 
+   isDarkWallpaper, 
+   onDragStart, 
+   onDragOver, 
+   onDrop, 
+   setEditingBookmark, 
+   refreshData 
+ }) => {
+   const isGlass = bookmark?.color === 'glass';
+   const bookmarkContrast = getContrastColor(bookmark?.color || '#f4f2fe');
+   const autoTextColor = isGlass 
+     ? (isDarkWallpaper ? 'text-white' : 'text-slate-900') 
+     : (bookmarkContrast === 'light' ? 'text-slate-900' : 'text-white');
+   const autoNoteTextColor = isGlass 
+     ? (isDarkWallpaper ? 'text-white/80' : 'text-slate-900/80') 
+     : (bookmarkContrast === 'light' ? 'text-slate-900/80' : 'text-white/80');
+   
+   const finalTextColor = bookmark?.textColor || autoTextColor;
+   const finalNoteTextColor = bookmark?.textColor ? `${bookmark.textColor}cc` : autoNoteTextColor; // approximate 80% opacity
+   
+   const title = bookmark?.title || bookmark?.name || '無名稱';
   const [isExpanded, setIsExpanded] = useState(false);
   const note = bookmark?.subtitle || '';
 
@@ -79,42 +83,44 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
         onDragOver={onDragOver}
         onDrop={(e) => onDrop(e, bookmark?.id, 'Bookmark', bookmark?.categoryId)}
         onClick={() => window.location.href = bookmark?.url}
-      className={`p-1 rounded-xl flex items-center gap-2 border transition-transform hover:-translate-y-0.5 active:scale-95 group cursor-move ${
-        isGlass 
-        ? 'bg-white/20 border-white/30 backdrop-blur-sm hover:bg-white/40' 
-        : 'border-border-ring'
-      }`}
+       className={`p-1 rounded-xl flex items-center gap-2 transition-transform hover:-translate-y-0.5 active:scale-95 group cursor-move ${
+         isGlass 
+         ? 'border border-white/30 bg-white/20 backdrop-blur-sm hover:bg-white/40' 
+         : (bookmark?.color && bookmark?.color !== '#f4f2fe') ? '' : 'border border-border-ring'
+       }`}
       style={{ backgroundColor: isGlass ? 'transparent' : (bookmark?.color || '#f4f2fe') }}
     >
-      <div className="flex-1 overflow-hidden">
-          <h3 className={`font-bold text-sm truncate ${bmTextColor}`}>{title}</h3>
-          <div 
-            className={`flex items-start gap-1`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div 
-              draggable={false}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsExpanded(!isExpanded);
-              }}
-              className={`text-xs mb-0.5 transition-all select-text cursor-pointer ${isExpanded ? 'whitespace-pre-wrap break-words' : 'truncate'} ${bmNoteTextColor}`}
-            >
-              {isExpanded ? note : (note.length > 40 ? note.substring(0, 40) + '...' : note)}
-            </div>
-          </div>
-      </div>
+       <div className="flex-1 overflow-hidden">
+           <h3 className={`font-bold text-sm truncate ${bookmark?.textColor ? '' : finalTextColor}`} style={bookmark?.textColor ? { color: bookmark.textColor } : {}}>{title}</h3>
+           <div 
+             className={`flex items-start gap-1`}
+             onClick={(e) => e.stopPropagation()}
+           >
+             <div 
+               draggable={false}
+               onClick={(e) => {
+                 e.stopPropagation();
+                 setIsExpanded(!isExpanded);
+               }}
+               className={`text-xs mb-0.5 transition-all select-text cursor-pointer ${isExpanded ? 'whitespace-pre-wrap break-words' : 'truncate'} ${bookmark?.textColor ? '' : finalNoteTextColor}`}
+               style={bookmark?.textColor ? { color: bookmark.textColor } : {}}
+             >
+               {isExpanded ? note : (note.length > 40 ? note.substring(0, 40) + '...' : note)}
+             </div>
+           </div>
+       </div>
       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              setEditingBookmark(bookmark);
-            }}
-            className={`p-1 ${isGlass ? (isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-slate-400 hover:text-primary') : 'text-slate-400 hover:text-primary'}`}
-            title="編輯書籤"
-          >
-            <span className="material-symbols-outlined text-base">edit</span>
-          </button>
+           <button 
+             onClick={(e) => {
+               e.stopPropagation();
+               setEditingBookmark(bookmark);
+             }}
+             className={`p-1 ${isGlass ? (isDarkWallpaper ? 'text-white/70 hover:text-white' : 'text-slate-400 hover:text-primary') : 'text-slate-400 hover:text-primary'} ${bookmark?.textColor ? '' : ''}`}
+             style={bookmark?.textColor ? { color: bookmark.textColor } : {}}
+             title="編輯書籤"
+           >
+             <span className="material-symbols-outlined text-base">edit</span>
+           </button>
           <button 
             onClick={(e) => {
               e.stopPropagation();
@@ -149,13 +155,16 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
 
   const { isDarkWallpaper } = useWallpaper();
   const contrast = getContrastColor(category.color || '#dee1ff');
-  const textColor = category.color === 'glass' 
+  const autoTextColor = category.color === 'glass' 
     ? (isDarkWallpaper ? 'text-white' : 'text-slate-900') 
     : (contrast === 'light' ? 'text-slate-900' : 'text-white');
-  const iconColor = category.color === 'glass' 
+  const autoIconColor = category.color === 'glass' 
     ? (isDarkWallpaper ? 'text-white' : 'text-primary') 
     : (contrast === 'light' ? 'text-primary' : 'text-white');
   const hoverBg = contrast === 'light' ? 'hover:bg-black/10' : 'hover:bg-white/20';
+  
+  const finalTextColor = category.textColor || autoTextColor;
+  const finalIconColor = category.textColor || autoIconColor;
 
   useEffect(() => {
     refreshData();
@@ -303,25 +312,27 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
       >
 
        <div className="flex justify-between items-center mb-4 group/cat-header">
-        <div className="flex items-center gap-2">
-          <i className={`${(category as any).icon || 'fa-solid fa-folder'} ${iconColor} text-xl`}></i>
-          <h2 className={`font-feature-label text-base ${textColor}`}>{category.name}</h2>
-        </div>
+         <div className="flex items-center gap-2">
+           <i className={`${(category as any).icon || 'fa-solid fa-folder'} ${category.textColor ? '' : finalIconColor} text-xl`} style={category.textColor ? { color: category.textColor } : {}}></i>
+           <h2 className={`font-feature-label text-base ${category.textColor ? '' : finalTextColor}`} style={category.textColor ? { color: category.textColor } : {}}>{category.name}</h2>
+         </div>
           <div className="flex items-center gap-1 relative opacity-0 group-hover/cat-header:opacity-100 transition-opacity">
-              <button 
-                onClick={() => setShowAddMenu(!showAddMenu)}
-                className={`p-1 ${hoverBg} rounded-full transition-colors ${iconColor}`}
-                title="新增"
-              >
-                <span className="material-symbols-outlined text-lg">add</span>
-              </button>
-              <button 
-                onClick={() => setEditingCategory(category)}
-                className={`p-1 ${hoverBg} rounded-full transition-colors ${iconColor}`}
-                title="編輯類別"
-              >
-                <span className="material-symbols-outlined text-lg">edit</span>
-              </button>
+               <button 
+                 onClick={() => setShowAddMenu(!showAddMenu)}
+                 className={`p-1 ${hoverBg} rounded-full transition-colors ${category.textColor ? '' : finalIconColor}`}
+                 style={category.textColor ? { color: category.textColor } : {}}
+                 title="新增"
+               >
+                 <span className="material-symbols-outlined text-lg">add</span>
+               </button>
+               <button 
+                 onClick={() => setEditingCategory(category)}
+                 className={`p-1 ${hoverBg} rounded-full transition-colors ${category.textColor ? '' : finalIconColor}`}
+                 style={category.textColor ? { color: category.textColor } : {}}
+                 title="編輯類別"
+               >
+                 <span className="material-symbols-outlined text-lg">edit</span>
+               </button>
               <button 
                 onClick={() => {
                   if (confirm(`確定要刪除類別 ${category.name} 及其所有內容嗎？`)) {
@@ -339,7 +350,10 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
                {showAddMenu && (
                  <div className="absolute top-full right-0 mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-xl py-1 z-[60] animate-in fade-in zoom-in-95 duration-100">
                     <button 
-                      onClick={() => openAddBookmark(category.id)}
+                      onClick={() => {
+                        openAddBookmark(category.id);
+                        setShowAddMenu(false);
+                      }}
                       className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2"
                     >
                       <span className="material-symbols-outlined text-lg text-slate-400">link</span>

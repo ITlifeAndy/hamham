@@ -21,6 +21,7 @@ export interface Category {
   id: string;
   name: string;
   color: string;
+  textColor?: string;
   icon?: string;
   sortOrder: number;
   parentId?: string;
@@ -40,6 +41,7 @@ export interface Bookmark {
   categoryId: string;
   icon?: string;
   color?: string;
+  textColor?: string;
 }
 
 export interface SharedPool {

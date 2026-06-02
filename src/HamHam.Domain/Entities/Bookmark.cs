@@ -8,6 +8,7 @@ namespace HamHam.Domain.Entities
         public Guid CategoriesId { get; set; }
         public string? Icon { get; set; }
         public string? Color { get; set; }
+        public string? TextColor { get; set; }
         public int SortOrder { get; set; }
         public string Title { get; set; } = string.Empty;
         public string? Subtitle { get; set; }

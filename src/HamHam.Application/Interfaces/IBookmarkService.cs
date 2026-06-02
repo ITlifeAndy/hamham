@@ -15,7 +15,7 @@ namespace HamHam.Application.Interfaces
         Task UpdateBookmarkOrderAsync(Guid userId, List<Guid> bookmarkIds);
     }
 
-    public record CreateBookmarkRequest(string Title, string? Subtitle, string Url, Guid? categoryId, string? icon, string? color);
-    public record UpdateBookmarkRequest(string Title, string? Subtitle, string Url, Guid? categoryId, string? icon, string? color, bool IsFavorite);
+    public record CreateBookmarkRequest(string Title, string? Subtitle, string Url, Guid? categoryId, string? icon, string? color, string? textColor);
+    public record UpdateBookmarkRequest(string Title, string? Subtitle, string Url, Guid? categoryId, string? icon, string? color, bool IsFavorite, string? textColor);
     public record ImportBookmarkRequest(string Title, string Url, string FolderPath);
 }
