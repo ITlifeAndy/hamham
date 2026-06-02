@@ -10,7 +10,7 @@ interface AuthModalProps {
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const [form, setForm] = useState({ name: '', username: '', email: '', password: '', hostUrl: 'https://hamham.newcity.com.tw' });
+  const [form, setForm] = useState({ name: '', username: '', email: '', password: '', hostUrl: 'your-API' });
 
   useEffect(() => {
     if (isOpen) {

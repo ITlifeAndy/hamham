@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HamHam.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+650bd6d84913efff5eae639858b7596bb67c8c24")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bbafc26cfe7420b90b69d1bf506fc4097843478b")]
 [assembly: System.Reflection.AssemblyProductAttribute("HamHam.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HamHam.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
